@@ -1,6 +1,8 @@
 package com.oddfar.campus.business.api;
 
 import cn.hutool.http.HttpUtil;
+import cn.hutool.json.JSONUtil;
+
 import com.oddfar.campus.business.entity.ILog;
 import com.oddfar.campus.business.entity.IUser;
 import com.oddfar.campus.common.utils.StringUtils;
@@ -49,15 +51,29 @@ public class PushPlusApi {
         return new TimerTask() {
             @Override
             public void run() {
-                String url = "http://www.pushplus.plus/send";
-                Map<String, Object> map = new HashMap<>();
-                map.put("token", token);
-                map.put("title", title);
-                map.put("content", content);
-                if (StringUtils.isEmpty(template)) {
-                    map.put("template", "html");
-                }
-                HttpUtil.post(url, map);
+                // String url = "http://www.pushplus.plus/send";
+                // Map<String, Object> map = new HashMap<>();
+                // map.put("token", token);
+                // map.put("title", title);
+                // map.put("content", content);
+                // if (StringUtils.isEmpty(template)) {
+                //     map.put("template", "html");
+                // }
+                // HttpUtil.post(url, map);
+
+                String url = "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=4c88d2bd-ba09-44b7-b380-4532b8c8c4e7";
+                Map<String, Object> message = new HashMap<>();
+                Map<String, String> text = new HashMap<>();
+                text.put("content", content);
+                message.put("msgtype", "text");
+                message.put("text", text);
+
+                String jsonMessage = JSONUtil.toJsonStr(message);
+                HttpUtil.createPost(url)
+                    .header("Content-Type", "application/json")
+                    .body(jsonMessage)
+                    .execute();
+                
             }
         };
     }
